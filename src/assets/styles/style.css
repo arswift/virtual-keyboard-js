@@ -1,0 +1,116 @@
+body {
+    display: block;
+    font-family: "Work Sans";
+    margin: 0;
+}
+
+.wrapper {
+    display: block;
+    margin: 0 auto;
+}
+
+h1 {
+    margin: 10px auto;
+    text-align: center;
+    font-size: 30px;
+    color: rgba(101,134,177,0.8);
+}
+
+.input {
+    display: block;
+    width: 700px;
+    height: 200px;
+    margin: 10px auto 10px;
+    padding: 10px;
+    font-size: 18px;
+    color: #444444;
+    overflow: auto;
+    font-family: inherit;
+    line-height: 1.15;
+    resize: none;
+    border: 3px solid black;
+}
+
+.input:focus {
+    outline: none !important;
+    border: 3px solid black;
+}
+
+.keyboard {
+    display: grid;
+    grid-template-columns: repeat(62, 8px);
+    grid-template-rows: repeat(5, 56px);
+    gap: 8px;
+    width: auto;
+    width: 970px;
+    margin: 0 auto;
+    padding: 10px;
+    background: #888888;
+    border: 3px solid #222222;
+    border-radius: 14px;
+}
+
+.key {
+    display: block;
+    position: relative;
+    grid-column: span 4;
+    font-weight: 500;
+    line-height: 40px;
+    text-align: center;
+    color: #ffffff;
+    background: #444444;
+    border-radius: 6px;
+    border: 1px solid rgba(0, 0, 0, 0.4);
+    box-shadow: 1px 1px 0px 0px rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    user-select: none;
+}
+
+.key:active {
+    background: #666666;
+}
+
+.active {
+    background: #666666;
+}
+
+.keyboard .key.m {
+    grid-column: span 5;
+}
+
+.keyboard .key.l {
+    grid-column: span 6;
+}
+
+.keyboard .key.xl {
+    grid-column: span 7;
+  }
+  .keyboard .key.back {
+    grid-column: span 9;
+  }
+  .keyboard .key.xxl {
+    grid-column: span 10;
+  }
+  .keyboard .key.space {
+    grid-column: span 19;
+  }
+
+p {
+    margin: 10px auto;
+    text-align: center;
+}
+
+.caps::after {
+    content: '';
+    height: 8px;
+    width: 8px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    position: absolute;
+    top: 7px;
+    right: 7px;
+}
+
+.caps-active::after {
+    background-color:lawngreen;
+}
