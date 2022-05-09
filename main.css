@@ -75,6 +75,10 @@ h1 {
     background: #030349;
 }
 
+.key:hover {
+    background: #030349;
+}
+
 .active {
     background: #030349;
 }
