@@ -1,7 +1,16 @@
 import './assets/styles/style.css';
+import {
+  codeDict,
+  dictEn,
+  dictRu,
+  shiftRuNorm,
+  shiftRuReversed,
+  shiftEnNorm,
+  shiftEnReversed,
+  shiftRuCode,
+  shiftEnCode,
+} from './assets/scripts/dictionaries';
 import { Keyboard } from './assets/scripts/keyboard';
-
-
 
 const DOMGenerator = () => {
   const main = document.createElement('div');
@@ -16,7 +25,18 @@ const DOMGenerator = () => {
 DOMGenerator();
 
 const input = document.querySelector('.input');
-const keyboard = new Keyboard(input);
+const keyboard = new Keyboard({
+  input,
+  codeDict,
+  dictEn,
+  dictRu,
+  shiftRuNorm,
+  shiftRuReversed,
+  shiftEnNorm,
+  shiftEnReversed,
+  shiftRuCode,
+  shiftEnCode,
+});
 keyboard.init();
 
 input.addEventListener('blur', () => {

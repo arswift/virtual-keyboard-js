@@ -1,7 +1,7 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const path = require('path');
-
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
     context: path.resolve(__dirname, "src"),
@@ -14,7 +14,9 @@ module.exports = {
     output: {
         filename: "bundle.js",
         path: path.resolve(__dirname, "dist"),
-        clean: true,
+        clean: {
+            keep: /\.git/,
+        },
     },
     plugins: [
         new HtmlWebpackPlugin({
@@ -22,6 +24,14 @@ module.exports = {
             template: "./index.html",
         }),
         new MiniCssExtractPlugin(),
+        new CopyWebpackPlugin({
+            patterns: [
+                {
+                    from: path.resolve(__dirname, 'src/favicon.ico'),
+                    to: path.resolve(__dirname, 'dist')
+                }
+            ]
+        }),
     ],
     module: {
         rules: [

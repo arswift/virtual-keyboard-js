@@ -23,6 +23,9 @@
   },
   "homepage": "https://github.com/arswift/virtual-keyboard-js#readme",
   "devDependencies": {
+    "@babel/eslint-parser": "^7.17.0",
+    "babel-eslint": "^10.1.0",
+    "copy-webpack-plugin": "^10.2.4",
     "css-loader": "^6.7.1",
     "eslint": "^8.14.0",
     "eslint-config-airbnb": "^19.0.4",
