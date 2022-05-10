@@ -14,7 +14,7 @@ import {
   keyboardRu,
   keyboardEn,
 } from './assets/scripts/dictionaries';
-import { Keyboard } from './assets/scripts/keyboard';
+import Keyboard from './assets/scripts/keyboard';
 
 const DOMGenerator = () => {
   const main = document.createElement('div');

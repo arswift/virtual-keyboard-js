@@ -9,7 +9,6 @@
 		"requireConfigFile": false
 	  },
 	"rules": {
-		"import/prefer-default-export": "off",
 		"no-param-reassign": 0 
 	},
 	"env": {
