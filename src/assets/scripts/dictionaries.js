@@ -147,6 +147,24 @@ const shiftEnReversed = {
   '?': '/',
 };
 
+const generateDict = (lang, code) => {
+  const obj = {};
+  for (let i = 0; i < code.length; i += 1) {
+    obj[code[i]] = lang[i];
+  }
+  return obj;
+};
+
+const ruToEng = generateDict(dictEn, dictRu);
+
+const engToRu = generateDict(dictRu, dictEn);
+
+const keyboardRu = generateDict(dictRu, codeDict);
+keyboardRu.Equal = '=';
+
+const keyboardEn = generateDict(dictEn, codeDict);
+keyboardEn.Equal = '=';
+
 export {
   codeDict,
   dictEn,
@@ -157,4 +175,8 @@ export {
   shiftEnReversed,
   shiftRuCode,
   shiftEnCode,
+  ruToEng,
+  engToRu,
+  keyboardRu,
+  keyboardEn,
 };

@@ -125,10 +125,10 @@ p {
 
 .caps::after {
     content: '';
-    height: 8px;
-    width: 8px;
+    height: 6px;
+    width: 6px;
     border-radius: 50%;
-    background-color: #ffffff;
+    background-color: #939cd3;
     position: absolute;
     top: 7px;
     right: 7px;

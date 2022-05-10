@@ -9,6 +9,10 @@ import {
   shiftEnReversed,
   shiftRuCode,
   shiftEnCode,
+  ruToEng,
+  engToRu,
+  keyboardRu,
+  keyboardEn,
 } from './assets/scripts/dictionaries';
 import { Keyboard } from './assets/scripts/keyboard';
 
@@ -23,7 +27,6 @@ const DOMGenerator = () => {
 };
 
 DOMGenerator();
-
 const input = document.querySelector('.input');
 const keyboard = new Keyboard({
   input,
@@ -36,6 +39,10 @@ const keyboard = new Keyboard({
   shiftEnReversed,
   shiftRuCode,
   shiftEnCode,
+  ruToEng,
+  engToRu,
+  keyboardRu,
+  keyboardEn,
 });
 keyboard.init();
 

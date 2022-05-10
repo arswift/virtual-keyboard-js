@@ -10,6 +10,10 @@ export class Keyboard {
     shiftEnReversed,
     shiftRuCode,
     shiftEnCode,
+    ruToEng,
+    engToRu,
+    keyboardRu,
+    keyboardEn,
   }) {
     this.properties.input = input;
     this.elements.ruDict = dictRu;
@@ -21,15 +25,15 @@ export class Keyboard {
     this.elements.shiftrevEn = shiftEnReversed;
     this.elements.shiftRuCode = shiftRuCode;
     this.elements.shiftEnCode = shiftEnCode;
+    this.elements.ruToEng = ruToEng;
+    this.elements.engToRu = engToRu;
+    this.elements.keyboardRu = keyboardRu;
+    this.elements.keyboardEn = keyboardEn;
   }
 
   elements = {
     keysContainer: null,
     keys: [],
-    keyboardEn: {},
-    keyboardRu: {},
-    ruToEng: {},
-    engToRu: {},
   };
 
   properties = {
@@ -37,136 +41,127 @@ export class Keyboard {
     capsLock: false,
     shift: false,
     lang: 'ru',
-    curShift: this.elements.shiftRu,
-    curRShift: this.elements.shiftrevRu,
-    curKeyboard: this.elements.keyboardRu,
-    curShiftCode: this.elements.shiftRuCode,
+    curShift: null,
+    curRShift: null,
+    curKeyboard: null,
+    curShiftCode: null,
   };
 
   init() {
-    this._generateKeyboard();
-    this._generateDict(this.elements.ruDict, this.elements.codeDict, this.elements.keyboardRu);
-    this.elements.keyboardRu.Equal = '=';
     this.properties.curKeyboard = this.elements.keyboardRu;
     this.properties.curShift = this.elements.shiftRu;
     this.properties.curRShift = this.elements.shiftrevRu;
     this.properties.curShiftCode = this.elements.shiftRuCode;
-    this._generateDict(this.elements.enDict, this.elements.codeDict, this.elements.keyboardEn);
-    this.elements.keyboardEn.Equal = '=';
-    this.properties.lang = localStorage.getItem('lang') ||'ru';
+    this.generateKeyboard();
+    this.properties.lang = localStorage.getItem('lang') || 'ru';
     window.addEventListener('keydown', (e) => {
-      this._keyboardPressHandler(e);
+      this.keyboardPressHandler(e);
     });
     window.addEventListener('keyup', (e) => {
-        this.elements.keys.forEach((key) => {
-        if (key.textContent === this.properties.curKeyboard[e.code] || key.textContent === this.properties.curShiftCode[e.code] || key.textContent.toLowerCase() === this.properties.curKeyboard[e.code]) {
+      this.elements.keys.forEach((key) => {
+        if (key.textContent === this.properties.curKeyboard[e.code]
+              || key.textContent === this.properties.curShiftCode[e.code]
+              || key.textContent.toLowerCase() === this.properties.curKeyboard[e.code]) {
           key.classList.remove('active');
         } else if ((key.textContent === 'Ctrl' || key.textContent === 'Alt' || key.textContent === 'Shift' || key.textContent === '') && key.classList.contains(e.code)) {
           key.classList.remove('active');
-          switch (e.code) {
-            case 'ShiftLeft':
-                this._offShift();
-                break;
-
-            case 'ShiftRight':
-                this._offShift();
-                break;
-            }
+          if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') this.offShift();
         } else if (key.textContent === 'Del' && e.code === 'Delete') key.classList.remove('active');
       });
     });
     if (this.properties.lang !== 'ru') {
-        this.properties.lang = 'ru';
-        this._switchLang();
+      this.properties.lang = 'ru';
+      this.switchLang();
     }
   }
 
-  _generateKeyboard() {
+  generateKeyboard() {
     const main = document.querySelector('.wrapper');
     this.elements.keysContainer = document.createElement('div');
     const description = '<p class="description">Клавиатура создана в операционной системе Windows</p>';
     const language = '<p class="language">Для переключения языка комбинация: левыe ctrl + alt</p>';
 
     this.elements.keysContainer.classList.add('keyboard');
-    this.elements.keysContainer.append(this._createKeys());
+    this.elements.keysContainer.append(this.createKeys());
     main.append(this.elements.keysContainer);
     this.elements.keys = main.querySelectorAll('.key');
     main.insertAdjacentHTML('beforeend', description);
     main.insertAdjacentHTML('beforeend', language);
   }
 
-  _keyboardPressHandler(e) {
-
+  keyboardPressHandler(e) {
     const ctrlL = document.querySelector('.ControlLeft');
     const altL = document.querySelector('.AltLeft');
-        this.elements.keys.forEach((key) => {
-        e.preventDefault();
-        if (key.textContent === this.properties.curKeyboard[e.code] || key.textContent === this.properties.curShiftCode[e.code] || key.textContent.toLowerCase() === this.properties.curKeyboard[e.code]) {
-            key.classList.add('active');
-          switch (e.code) {
-            case 'Backspace':
-              this._backSpace();
-              break;
+    this.elements.keys.forEach((key) => {
+      e.preventDefault();
+      if (key.textContent === this.properties.curKeyboard[e.code]
+          || key.textContent === this.properties.curShiftCode[e.code]
+          || key.textContent.toLowerCase() === this.properties.curKeyboard[e.code]) {
+        key.classList.add('active');
+        switch (e.code) {
+          case 'Backspace':
+            this.backSpace();
+            break;
 
-            case 'Tab':
-              this._inputValue('    ');
-              break;
+          case 'Tab':
+            this.inputValue('    ');
+            break;
 
-            case 'Delete':
-              this._del();
-              break;
+          case 'Delete':
+            this.del();
+            break;
 
-            case 'CapsLock':
-              this._toggleCapsLock();
-              break;
+          case 'CapsLock':
+            this.toggleCapsLock();
+            break;
 
-            case 'Enter':
-              this._inputValue('\n');
-              break;
+          case 'Enter':
+            this.inputValue('\n');
+            break;
 
-            case 'MetaLeft':
-              break;
+          case 'MetaLeft':
+            break;
 
-            default:
-              this._inputValue(key.textContent);
-          }
-        } else if ((key.textContent === 'Ctrl' || key.textContent === 'Alt' || key.textContent === 'Shift' || key.textContent === '') && key.classList.contains(e.code)) {
-            key.classList.add('active');
-          switch (e.code) {
-            case 'ShiftLeft':
-                this._onShift();
-                break;
-
-            case 'ShiftRight':
-                this._onShift();
-                break;
-
-            case 'ControlLeft':
-                if (altL.classList.contains('active')) this._switchLang();
-              break;
-
-            case 'ControlRight':
-              break;
-
-            case 'AltLeft':
-                if (ctrlL.classList.contains('active')) this._switchLang();
-              break;
-
-            case 'AltRight':
-              break;
-
-            case 'Space':
-              this._inputValue(' ');
-              break;
-
-            default:
-              break;
-          }
+          default:
+            this.inputValue(key.textContent);
         }
-      });
+      } else if ((key.textContent === 'Ctrl' || key.textContent === 'Alt' || key.textContent === 'Shift' || key.textContent === '') && key.classList.contains(e.code)) {
+        key.classList.add('active');
+        switch (e.code) {
+          case 'ShiftLeft':
+            this.onShift();
+            break;
+
+          case 'ShiftRight':
+            this.onShift();
+            break;
+
+          case 'ControlLeft':
+            if (altL.classList.contains('active')) this.switchLang();
+            break;
+
+          case 'ControlRight':
+            break;
+
+          case 'AltLeft':
+            if (ctrlL.classList.contains('active')) this.switchLang();
+            break;
+
+          case 'AltRight':
+            break;
+
+          case 'Space':
+            this.inputValue(' ');
+            break;
+
+          default:
+            break;
+        }
+      }
+    });
   }
 
-  _createKeys() {
+  createKeys() {
     const fragment = document.createDocumentFragment();
 
     this.elements.ruDict.forEach((key) => {
@@ -179,34 +174,34 @@ export class Keyboard {
         case 'Backspace':
           keyElement.classList.add('back');
           keyElement.addEventListener('click', () => {
-            this._backSpace();
+            this.backSpace();
           });
           break;
 
         case 'Tab':
           keyElement.classList.add('m');
           keyElement.addEventListener('click', () => {
-            this._inputValue('    ');
+            this.inputValue('    ');
           });
           break;
 
         case 'Del':
           keyElement.addEventListener('click', () => {
-            this._del();
+            this.del();
           });
           break;
 
         case 'CapsLock':
           keyElement.classList.add('xl', 'caps');
           keyElement.addEventListener('click', () => {
-            this._toggleCapsLock();
+            this.toggleCapsLock();
           });
           break;
 
         case 'Enter':
           keyElement.classList.add('xxl');
           keyElement.addEventListener('click', () => {
-            this._inputValue('\n');
+            this.inputValue('\n');
           });
           break;
 
@@ -214,22 +209,25 @@ export class Keyboard {
           keyElement.classList.add('xl', 'ShiftLeft');
           keyElement.textContent = 'Shift';
           keyElement.addEventListener('mousedown', () => {
-              this._onShift();
-          })
+            this.onShift();
+          });
           keyElement.addEventListener('mouseup', () => {
-              this._offShift();
-          })
+            this.offShift();
+          });
+          keyElement.addEventListener('mouseout', () => {
+            this.offShift();
+          });
           break;
 
         case 'ShiftR':
           keyElement.classList.add('xxl', 'ShiftRight');
           keyElement.textContent = 'Shift';
           keyElement.addEventListener('mousedown', () => {
-            this._onShift();
-          })
+            this.onShift();
+          });
           keyElement.addEventListener('mouseup', () => {
-            this._offShift();
-          })
+            this.offShift();
+          });
           break;
 
         case 'CtrlL':
@@ -260,7 +258,7 @@ export class Keyboard {
           keyElement.classList.add('Space');
           keyElement.textContent = '';
           keyElement.addEventListener('click', () => {
-            this._inputValue(' ');
+            this.inputValue(' ');
           });
           break;
 
@@ -269,7 +267,7 @@ export class Keyboard {
           keyElement.classList.add('letter');
 
           keyElement.addEventListener('click', (e) => {
-            this._inputValue(e.target.textContent);
+            this.inputValue(e.target.textContent);
           });
       }
 
@@ -279,41 +277,46 @@ export class Keyboard {
     return fragment;
   }
 
-  _toggleCapsLock() {
+  toggleCapsLock() {
     this.properties.capsLock = !this.properties.capsLock;
     const keys = document.querySelectorAll('.letter');
     const caps = document.querySelector('.caps');
     caps.classList.toggle('caps-active');
-    for (const key of keys) {
-      key.textContent = this.properties.capsLock ? key.textContent.toUpperCase() : key.textContent.toLowerCase();
-    }
+    keys.forEach((key) => {
+      key.textContent = this.properties.capsLock ? key.textContent.toUpperCase()
+        : key.textContent.toLowerCase();
+    });
   }
 
-  _onShift() {
-    if(!this.properties.capsLock) this.properties.shift = true;
+  onShift() {
+    if (!this.properties.capsLock) this.properties.shift = true;
     else this.properties.shift = false;
-    this._toggleShift();
+    this.toggleShift();
   }
 
-  _offShift() {
-    if(!this.properties.capsLock) this.properties.shift = false;
+  offShift() {
+    if (!this.properties.capsLock) this.properties.shift = false;
     else this.properties.shift = true;
-    this._toggleShift();
+    this.toggleShift();
   }
 
-  _toggleShift() {
+  toggleShift() {
     const keys = document.querySelectorAll('.letter');
-    keys.forEach(key => {
-        key.textContent = this.properties.shift ? key.textContent.toUpperCase() : key.textContent.toLowerCase();
-    })
+    keys.forEach((key) => {
+      key.textContent = this.properties.shift ? key.textContent.toUpperCase()
+        : key.textContent.toLowerCase();
+    });
     const shifted = document.querySelectorAll('.key');
-    shifted.forEach(key => {
-        if (this.properties.shift && this.properties.curShift[key.textContent]) key.textContent = this.properties.curShift[key.textContent];
-        else if (!this.properties.shift && this.properties.curRShift[key.textContent]) key.textContent = this.properties.curRShift[key.textContent];
-    })
+    shifted.forEach((key) => {
+      if (this.properties.shift && this.properties.curShift[key.textContent]) {
+        key.textContent = this.properties.curShift[key.textContent];
+      } else if (!this.properties.shift && this.properties.curRShift[key.textContent]) {
+        key.textContent = this.properties.curRShift[key.textContent];
+      }
+    });
   }
 
-  _inputValue(letter) {
+  inputValue(letter) {
     const position = this.properties.input.selectionStart;
     const positionEnd = this.properties.input.selectionEnd;
     const text = this.properties.value;
@@ -326,64 +329,63 @@ export class Keyboard {
     this.properties.input.setSelectionRange(position + letter.length, position + letter.length);
   }
 
-  _backSpace() {
+  backSpace() {
     const position = this.properties.input.selectionStart;
     const positionEnd = this.properties.input.selectionEnd;
     const text = this.properties.value;
-    this.properties.value = position === positionEnd ? text.slice(0, position - 1) + text.slice(positionEnd) : text.slice(0, position) + text.slice(positionEnd);
+    this.properties.value = position === positionEnd
+      ? text.slice(0, position - 1) + text.slice(positionEnd)
+      : text.slice(0, position) + text.slice(positionEnd);
     this.properties.input.value = this.properties.value;
-    position === positionEnd ? this.properties.input.setSelectionRange(position - 1, position - 1) : this.properties.input.setSelectionRange(position, position);
+    if (positionEnd) this.properties.input.setSelectionRange(position - 1, position - 1);
+    else this.properties.input.setSelectionRange(position, position);
   }
 
-  _del() {
+  del() {
     const position = this.properties.input.selectionStart;
     const positionEnd = this.properties.input.selectionEnd;
     const text = this.properties.value;
-    if (text.length <= 1 || (position <= 1 && position === positionEnd)) return this.properties.input.setSelectionRange(position, position);
-    this.properties.value = position === positionEnd ? text.slice(0, position) + text.slice(positionEnd + 1) : text.slice(0, position) + text.slice(positionEnd);
-    this.properties.input.value = this.properties.value;
-    position ===this.properties.input.setSelectionRange(position , position);
-  }
-
-  _generateDict(lang, code, obj) {
-    for (let i = 0; i < code.length; i++) {
-      obj[code[i]] = lang[i];
+    if (text.length <= 1 || (position <= 1 && position === positionEnd)) {
+      return this.properties.input.setSelectionRange(position, position);
     }
+    this.properties.value = position === positionEnd
+      ? text.slice(0, position) + text.slice(positionEnd + 1)
+      : text.slice(0, position) + text.slice(positionEnd);
+    this.properties.input.value = this.properties.value;
+    return this.properties.input.setSelectionRange(position, position);
   }
 
-  _switchLang() {
-      let back = false;
-      if (this.properties.capsLock) {
-          this._toggleCapsLock();
-          back = true;
+  switchLang() {
+    let back = false;
+    if (this.properties.capsLock) {
+      this.toggleCapsLock();
+      back = true;
+    }
+    if (this.properties.lang === 'ru') {
+      this.properties.lang = 'en';
+      this.properties.curShift = this.elements.shiftEn;
+      this.properties.curRShift = this.elements.shiftrevEn;
+      this.properties.curShiftCode = this.elements.shiftEnCode;
+      this.properties.curKeyboard = this.elements.keyboardEn;
+    } else {
+      this.properties.lang = 'ru';
+      this.properties.curShift = this.elements.shiftRu;
+      this.properties.curRShift = this.elements.shiftrevRu;
+      this.properties.curShiftCode = this.elements.shiftRuCode;
+      this.properties.curKeyboard = this.elements.keyboardRu;
+    }
+    const curDict = this.properties.lang === 'en' ? this.elements.ruToEng : this.elements.engToRu;
+
+    this.elements.keys.forEach((key) => {
+      if (key.textContent !== 'Shift' && key.textContent !== 'Alt' && key.textContent !== 'Ctrl') {
+        key.textContent = curDict[key.textContent];
       }
-      if (this.properties.lang === 'ru') {
-        this.properties.lang = 'en';
-        if (!Object.keys(this.elements.ruToEng).length)  this._generateDict(this.elements.enDict, this.elements.ruDict, this.elements.ruToEng);
-        this.properties.curShift = this.elements.shiftEn;
-        this.properties.curRShift = this.elements.shiftrevEn;
-        this.properties.curShiftCode = this.elements.shiftEnCode;
-        this.properties.curKeyboard = this.elements.keyboardEn;
-      } else {
-        this.properties.lang = 'ru';
-        if (!Object.keys(this.elements.engToRu).length)  this._generateDict(this.elements.ruDict, this.elements.enDict, this.elements.engToRu);
-        this.properties.curShift = this.elements.shiftRu;
-        this.properties.curRShift = this.elements.shiftrevRu;
-        this.properties.curShiftCode = this.elements.shiftRuCode;
-        this.properties.curKeyboard = this.elements.keyboardRu;
-      }
-      let curDict = this.properties.lang === 'en' ? this.elements.ruToEng : this.elements.engToRu;
-      
-      this.elements.keys.forEach(key => {
-          if (key.textContent !== 'Shift' && key.textContent !== 'Alt' && key.textContent !== 'Ctrl') {
-            key.textContent = curDict[key.textContent];
-          }
-      })
-      if (back) this._toggleCapsLock();
-      this._setlocal();
+    });
+    if (back) this.toggleCapsLock();
+    this.setlocal();
   }
 
-  _setlocal() {
+  setlocal() {
     localStorage.setItem('lang', this.properties.lang);
   }
 }
