@@ -289,22 +289,21 @@ export default class Keyboard {
   }
 
   onShift() {
-    if (!this.properties.capsLock) this.properties.shift = true;
-    else this.properties.shift = false;
+    this.properties.shift = true;
     this.toggleShift();
   }
 
   offShift() {
-    if (!this.properties.capsLock) this.properties.shift = false;
-    else this.properties.shift = true;
+    this.properties.shift = false;
     this.toggleShift();
   }
 
   toggleShift() {
     const keys = document.querySelectorAll('.letter');
     keys.forEach((key) => {
-      key.textContent = this.properties.shift ? key.textContent.toUpperCase()
-        : key.textContent.toLowerCase();
+      key.textContent = ((this.properties.shift && !this.properties.capsLock)
+        || (!this.properties.shift && this.properties.capsLock))
+        ? key.textContent.toUpperCase() : key.textContent.toLowerCase();
     });
     const shifted = document.querySelectorAll('.key');
     shifted.forEach((key) => {
