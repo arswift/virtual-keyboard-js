@@ -18,7 +18,7 @@ h1 {
     margin: 10px auto;
     text-align: center;
     font-size: 30px;
-    color: rgba(252, 253, 255, 0.8);
+    color: #d3d8ff;
 }
 
 .input {
@@ -113,11 +113,12 @@ h1 {
   .keyboard .key.xxl {
     grid-column: span 10;
   }
-  .keyboard .key.space {
+  .keyboard .key.Space {
     grid-column: span 19;
   }
 
 p {
+    color: #939cd3;
     margin: 10px auto;
     text-align: center;
 }
