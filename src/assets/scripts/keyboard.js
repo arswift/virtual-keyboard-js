@@ -102,7 +102,7 @@ export class Keyboard {
         this.elements.keys.forEach((key) => {
         e.preventDefault();
         if (key.textContent === this.properties.curKeyboard[e.code] || key.textContent === this.properties.curShiftCode[e.code] || key.textContent.toLowerCase() === this.properties.curKeyboard[e.code]) {
-          key.classList.add('active');
+            key.classList.add('active');
           switch (e.code) {
             case 'Backspace':
               this._backSpace();
@@ -135,7 +135,7 @@ export class Keyboard {
               this._inputValue(key.textContent);
           }
         } else if ((key.textContent === 'Ctrl' || key.textContent === 'Alt' || key.textContent === 'Shift') && key.classList.contains(e.code)) {
-          key.classList.add('active');
+            key.classList.add('active');
           switch (e.code) {
             case 'ShiftLeft':
                 this._onShift();
